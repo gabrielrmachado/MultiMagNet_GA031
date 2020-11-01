@@ -10,14 +10,18 @@ class User:
 class Authentication:
     def __init__(self, user):
         self.__user = user
-
-    def __readUser(self):
-        # checks in a file whether a given name is present.
-        return User(1, "Gabriel", "123456")
     
     def authenticate(self):
-        user = self.__readUser()
-        hash_pass = sha256(self.__user.password).hexdigest()
-        if hash_pass == user.password: return True
-        else: return False
-
+        user_id, user_data = UserDAO().get_user(self.__user.id)
+        if user_id != None:
+            user = User(user_id, user_data[0], user_data[1])
+            hash_pass = sha256(self.__user.password.encode('utf-8')).hexdigest()
+            
+            if self.__user.name == user.name and hash_pass == user.password: 
+                print("User {0} has logged successfully.".format(self.__user.name))
+                return True
+            else: 
+                print("Name and/or password are incorrect. Permission denied.")
+                return False
+        
+        return False
