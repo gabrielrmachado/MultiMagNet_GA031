@@ -1,0 +1,2 @@
+class MultiMagNet:
+    pass
