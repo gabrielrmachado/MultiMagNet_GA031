@@ -2,26 +2,22 @@ from hashlib import sha256
 from Data import UserDAO
 
 class User:
-    def __init__(self, id, name, password):
-        self.id = id
-        self.name = name
-        self.password = password
-
-class Authentication:
-    def __init__(self, user):
-        self.__user = user
+    def __init__(self):
+        self.__userDAO = UserDAO()
     
-    def authenticate(self):
-        user_id, user_data = UserDAO().get_user(self.__user.id)
-        if user_id != None:
-            user = User(user_id, user_data[0], user_data[1])
-            hash_pass = sha256(self.__user.password.encode('utf-8')).hexdigest()
-            
-            if self.__user.name == user.name and hash_pass == user.password: 
-                print("User {0} has logged successfully.".format(self.__user.name))
-                return True
-            else: 
-                print("Name and/or password are incorrect. Permission denied.")
-                return False
+    def login(self, id):
+        self.__user_id, self.__user_data = self.__userDAO.get_user(id)
+        input_password = input('Type the password of user {0} to login: '.format(self.__user_data[0]))
+        input_password_hash = sha256(input_password.encode('utf-8')).hexdigest()
         
-        return False
+        if input_password_hash == self.__user_data[1]:
+            print("User {0} has logged successfully.".format(self.__user_data[0]))
+        else: 
+            raise PermissionError("Password invalid. Permission denied.")
+
+    def get_priority_logged_user(self):
+        return self.__user_data[2]
+
+# user = User()
+# user.login(3)
+# print(user.get_priority_logged_user())

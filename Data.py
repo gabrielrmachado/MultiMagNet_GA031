@@ -41,33 +41,27 @@ class UserDAO:
         else:
             raise ValueError("User with ID {0} not found.".format(id))
 
-    def update_user(self, id, new_name, new_password):
+    def update_user(self, id, new_name, new_password, new_priority):
         try:
             id_str, user_file = self.get_user(id)
-            old_password = input("Please confirm the user's password to apply the changes: ")
-            old_password_hash = sha256(old_password.encode('utf-8')).hexdigest()
-
-            if old_password_hash == sha256(old_password.encode('utf-8')).hexdigest():        
-                user_file[0] = new_name
-                user_file[1] = sha256(new_password.encode('utf-8')).hexdigest()
-                self.__users[id_str] = user_file
-                with open(self.__path, 'w') as file:
-                    json.dump(self.__users, file)
-                
-                print("Changes applied successfully!")
-                return True
-            else:
-                print("Invalid password.")
-                return False
-
+            user_file[0] = new_name
+            user_file[1] = sha256(new_password.encode('utf-8')).hexdigest()
+            user_file[2] = new_priority
+            self.__users[id_str] = user_file
+            with open(self.__path, 'w') as file:
+                json.dump(self.__users, file)
+            
+            print("Changes applied successfully!")
+            return True
+            
         except ValueError as e:
             print(e)
             return False
 
-    def create_user(self, name, password):
+    def create_user(self, name, password, priority):
         id = str(max(list(map(int, self.__users.keys())))+1)
         hash = sha256(password.encode('utf-8')).hexdigest()
-        self.__users[id] = [name, hash]
+        self.__users[id] = [name, hash, priority]
         
         with open(self.__path, 'w') as users_file:
             json.dump(self.__users, users_file)
@@ -81,25 +75,21 @@ class UserDAO:
     def delete_user(self, id):
         try:
             id_str, user = self.get_user(id)
-            user_password = input("You're about to delete the user {0}. Please confirm his/her password to proceed: ".format(user[0]))
+            del self.__users[id_str]                
+            with open(self.__path, 'w') as users_file:
+                json.dump(self.__users, users_file)
+                print("User {0} has been removed successfully.".format(user[0]))
             
-            if sha256(user_password.encode('utf-8')).hexdigest() == user[1]:                
-                del self.__users[id_str]                
-                with open(self.__path, 'w') as users_file:
-                   json.dump(self.__users, users_file)
-                   print("User {0} has been removed successfully.".format(user[0]))
-                
-                return True
-            else:
-                print("Invalid password.")
-                return False
+            return True
+
         except ValueError as e:
             print(e)
             return False
 
-userDao = UserDAO()
-print(userDao.get_users_size())
-# userDao.update_user(1, "Gabriel Resende Machado", "445566")
-userDao.create_user("Sabrina", "sag_22311as")
-print(userDao.get_users_size())
-userDao.delete_user(userDao.get_users_size()-1)
+# userDao = UserDAO()
+# print(userDao.get_users_size())
+# userDao.delete_user(userDao.get_users_size()-1)
+# # userDao.update_user(1, "Gabriel Resende Machado", "445566")
+# userDao.create_user("Sabrina", "sag_22311as", 2)
+# print(userDao.get_users_size())
+
