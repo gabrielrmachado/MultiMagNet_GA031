@@ -14,7 +14,6 @@ class ImageDAO:
         else:
             images, labels = mnist_data.load_testing()
 
-        # print(mnist_data.display(images[index]))
         return images, labels
 
     @staticmethod
