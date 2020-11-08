@@ -52,6 +52,33 @@ class Smoothing(PreprocessorDecorator):
     def apply(self):
         return self._image.apply() + ", smoothed"
 
-image = Image(None, 23)
-image_prepr = Resize(Smoothing(Rotation(image, 90), []), 32,16)
-print(image_prepr.apply())
+
+class PreprocessingManager:
+    """
+        Performs the preprocessing operations on the provided image.
+
+        image (Image): the image object that will be preprocessed.
+        **operations (dict):  the list of preprocessing techniques which will be applied in the image. They can be:
+            - ro (rotation): simulates an image rotation. The degrees must be passed along (eg.: ro: 30)
+            - rz (resize): simulates an image resizing. The values must be passed along (eg.: rz: 32x32)  
+            - sm (smoothing): simulates an image smoothing. No values are passed. 
+    """
+    def __init__(self, image: Image, **operations):
+        self.__message = ""
+        self.__image = image
+        self.__operations = operations
+
+    def apply(self):
+        for key in self.__operations.keys():
+            if key == 'ro':
+                self.__image = Rotation(self.__image, self.__operations[key])
+            elif key == 'rz':
+                self.__image = Resize(self.__image, self.__operations[key][0], self.__operations[key][1])
+            elif key == 'sm':
+                self.__image = Smoothing(self.__image, self.__operations[key])
+        
+        print(self.__image.apply())
+
+        
+# preprocessing = PreprocessingManager(Image(None, 23), sm=[], ro=90, rz=[32,32])
+# preprocessing.apply()
