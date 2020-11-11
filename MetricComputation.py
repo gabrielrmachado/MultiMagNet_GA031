@@ -50,9 +50,7 @@ class MetricComputation:
         if metric == Metric.JSD: return JSDMetric()
         else: return REMetric()
 
-    def compute_metrics(self):
-        from Helper import Helper
-        
+    def __compute_metrics(self):        
         for i in range(self.__numCombinations):
 
             for j in range(len(self.__sset)):
@@ -60,21 +58,43 @@ class MetricComputation:
 
                 for k in range(len(self.__vleg)):
                     r_image = component.execute(self.__vleg[k])
+                    
+                    # computes the corresponding metric
                     self.__metrics[i][j][k] = self.__get_metric(self.__combinations[i][1]).compute(self.__vleg[k], r_image)
 
         print(self.__metrics, self.__metrics.shape)
 
-    def get_tau_set(self):
-        pass
+    def get_tau_set(self): 
+        """
+        Computes the threshold set "TAU" for each defense component. It contains 'c' times 'm' thresholds.
 
+        Returns:
+        --------------
+        tau_set (np.ndarray): A 'c' x 'm' matrix. Each row corresponds to a combination, each cell to a component and each cell to a threshold.
+
+        combinations (list): The list containing the parameter combinations.
+        """
+        import math
+        tau_set = np.zeros(shape=(self.__numCombinations, len(self.__sset)))
+
+        self.__compute_metrics()
+
+        for i in range(self.__numCombinations): 
+            for j in range(len(self.__sset)):
+                metrics_desc_order = -np.sort(-self.__metrics[i][j]) # sorts in descending order
+                index = math.ceil(self.__combinations[i][0] * len(metrics_desc_order))
+                print("Index: {0}".format(index))
+                tau_set[i][j] = metrics_desc_order[index]
+        
+        return tau_set, self.__combinations
 
 # from Data import ImageDAO, Dataset, AttackAlgorithm
 # from Components import Factory, Component
 
 # f = Component()
 # m = MetricComputation([0.1, 0.2, 0.3, 0.25], [Metric.RE, Metric.JSD], [ThresholdApproach.MTA], ImageDAO.get_images(100)[0], [f.getComponent(Factory.CAE), f.getComponent(Factory.DAE), f.getComponent(Factory.GAN)])
-# m.compute_metrics()
-
+# tau_set, _ = m.get_tau_set()
+# print(tau_set, tau_set.shape)
 
 # from Data import ImageDAO, Dataset, AttackAlgorithm
 
