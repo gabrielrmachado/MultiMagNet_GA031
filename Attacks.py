@@ -3,6 +3,7 @@ from enum import Enum
 import time
 
 class AttackAlgorithm(Enum):
+    NONE = 0
     FGSM = 1
     DeepFool = 2
     CW = 3
@@ -10,7 +11,6 @@ class AttackAlgorithm(Enum):
 
 class Attack:
     def set_attack(self, images, algorithm: AttackAlgorithm, **atk_params):
-        self.__perturbedImages = images
         self.__params = atk_params
         self.__attack: IAttack
        
@@ -24,12 +24,12 @@ class Attack:
             self.__attack = CW(images)
     
     def perform_attack(self):
-        self.__attack.compute_perturbations(**self.__params)
+        return self.__attack.compute_perturbations(**self.__params)
 
 
 class IAttack(ABC):
     def __init__(self, images):
-        self.images = images
+        self._adv_images = images
 
     @abstractmethod
     def compute_perturbations(self, **atk_params): raise NotImplementedError
@@ -44,9 +44,10 @@ class FGSM(IAttack):
         for param in atk_params:
             print("{0}: {1}".format(param, atk_params[param]))
 
-        print("Attacking images with FGSM attack...")
+        print("Attacking images with FGSM...")
         time.sleep(1)
-        print("FGSM done. {0} adversarial images crafted.\n".format(len(self.images[0])))
+        print("FGSM done. {0} adversarial images crafted.\n".format(len(self._adv_images)))
+        return self._adv_images
 
 class BIM(IAttack):
     def __init__(self, images):
@@ -58,9 +59,10 @@ class BIM(IAttack):
         for param in atk_params:
             print("{0}: {1}".format(param, atk_params[param]))
 
-        print("Attacking images with BIM attack...")
+        print("Attacking images with BIM...")
         time.sleep(2)
-        print("BIM done. {0} adversarial images crafted.\n".format(len(self.images[0])))
+        print("BIM done. {0} adversarial images crafted.\n".format(len(self._adv_images)))
+        return self._adv_images
 
 class DeepFool(IAttack):
     def __init__(self, images):
@@ -72,9 +74,10 @@ class DeepFool(IAttack):
         for param in atk_params:
             print("{0}: {1}".format(param, atk_params[param]))
 
-        print("Attacking images with DeepFool attack...")
+        print("Attacking images with DeepFool...")
         time.sleep(3)
-        print("DeepFool done. {0} adversarial images crafted.\n".format(len(self.images[0])))
+        print("DeepFool done. {0} adversarial images crafted.\n".format(len(self._adv_images)))
+        return self._adv_images
 
 class CW(IAttack):
     def __init__(self, images):
@@ -86,6 +89,7 @@ class CW(IAttack):
         for param in atk_params:
             print("{0}: {1}".format(param, atk_params[param]))
 
-        print("Attacking images with CW attack...")
+        print("Attacking images with CW...")
         time.sleep(4)
-        print("CW done. {0} adversarial images crafted.\n".format(len(self.images[0])))
+        print("CW done. {0} adversarial images crafted.\n".format(len(self._adv_images)))
+        return self._adv_images

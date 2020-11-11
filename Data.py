@@ -4,23 +4,37 @@ from pathlib import Path
 from hashlib import sha256
 import json
 from Attacks import AttackAlgorithm, Attack
+from enum import Enum
+
+class Dataset(Enum):
+    Training = 1
+    Test = 2
 
 class ImageDAO:
     @staticmethod
-    def get_images(training=True):
+    def get_images(numberOfImages:int, dataset = Dataset.Training):
         mnist_data = MNIST("data/images")
-        if training:
+        
+        if dataset == Dataset.Training:
             images, labels = mnist_data.load_training()
+            return images[:numberOfImages], labels[:numberOfImages]
+
         else:
             images, labels = mnist_data.load_testing()
 
-        return images, labels
+        return images[:numberOfImages], labels[:numberOfImages]
 
     @staticmethod
-    def get_adv_images(images, algorithm: AttackAlgorithm, **params):
+    def get_Vdataset(images, labels, algorithm: AttackAlgorithm, **params):
+        from random import sample
+        
         attack = Attack()
-        attack.set_attack(images, algorithm, **params)
-        attack.perform_attack()
+        attack.set_attack(images.copy(), algorithm, **params)
+        adv_images = sample(attack.perform_attack(), len(images))
+        images.extend(list(adv_images))
+        labels.extend(list(labels))
+
+        return images, labels
 
 class UserDAO:
     def __init__(self, path = "data/users/users.json"):
@@ -99,4 +113,4 @@ class UserDAO:
 # userDao.create_user("Sabrina", "sag_22311as", 2)
 # print(userDao.get_users_size())
 
-ImageDAO.get_adv_images(ImageDAO.get_images(), AttackAlgorithm.CW, eps=0.3, n_iter=100, alpha=0.01)
+# ImageDAO.get_adv_images(ImageDAO.get_images(), AttackAlgorithm.CW, eps=0.3, n_iter=100, alpha=0.01)

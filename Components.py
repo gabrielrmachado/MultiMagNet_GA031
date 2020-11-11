@@ -4,74 +4,71 @@ import time
 import random
 
 class IComponent(ABC):
-    def __init__(self, image, id):
-        self._image = image
+    def __init__(self, id):
         self._id = id
 
     @abstractmethod
-    def execute(self): raise NotImplementedError
+    def execute(self, image): raise NotImplementedError
 
 class CAE(IComponent):
-    def __init__(self, image, id):
-        super().__init__(image, id)
+    def __init__(self, id):
+        super().__init__(id)
 
-    def execute(self):
+    def execute(self, image):
         print("CAE {0} is reconstructing the image...".format(self._id))
-        time.sleep(1.5)
+        image_ref = image.copy()
         print("CAE finished.")
-        return self._image, True
-        
+        return image_ref        
 
 class DAE(IComponent):
-    def __init__(self, image, id):
-        super().__init__(image, id)
+    def __init__(self, id):
+        super().__init__(id)
 
-    def execute(self):
+    def execute(self, image):
         print("DAE {0} is reconstructing the image...".format(self._id))
-        time.sleep(1.5)
+        image_ref = image.copy()
         print("DAE finished.")
-        return self._image, True
+        return image_ref
 
 class GAN(IComponent):
-    def __init__(self, image, id):
-        super().__init__(image, id)
+    def __init__(self, id):
+        super().__init__(id)
 
-    def execute(self):
+    def execute(self, image):
         print("GAN {0} is reconstructing the image...".format(self._id))
-        time.sleep(2)
-        print("GAN finished.")
-        return self._image, True
+        image_ref = image.copy()
+        print("CAE finished.")
+        return image_ref
 
 class ComponentFactory(ABC):
     @abstractmethod
-    def __init__(self, image):
+    def __init__(self):
         self._id = random.randint(1, 10)
-        self._image = image
 
     def create(self): raise NotImplementedError
 
 class CAEFactory(ComponentFactory):
-    def __init__(self, image):
-        super().__init__(image)
+    def __init__(self):
+        super().__init__()
         
     def create(self): 
-        return CAE(self._image, self._id)
+        return CAE(self._id)
 
 
 class DAEFactory(ComponentFactory):
-    def __init__(self, image):
-        super().__init__(image)
+    def __init__(self):
+        super().__init__()
 
     def create(self): 
-        return DAE(self._image, self._id)
+        return DAE(self._id)
 
 
 class GANFactory(ComponentFactory):
-    def __init__(self, image):
-        super().__init__(image)
+    def __init__(self,):
+        super().__init__()
 
     def create(self): 
-        return GAN(self._image, self._id)
+        return GAN(self._id)
 
 class Factory(Enum):
     CAE = 1
@@ -82,15 +79,15 @@ class Component:
     def __init__(self):
         self.__component: ComponentFactory
 
-    def getComponent(self, image, factory: Factory):
+    def getComponent(self, factory: Factory):
         if factory == Factory.CAE:
-            self.__component = CAEFactory(image).create()
+            self.__component = CAEFactory().create()
 
         elif factory == Factory.DAE:
-            self.__component = DAEFactory(image).create()
+            self.__component = DAEFactory().create()
 
         elif factory == Factory.GAN:
-            self.__component = GANFactory(image).create()
+            self.__component = GANFactory().create()
 
         return self.__component
 
