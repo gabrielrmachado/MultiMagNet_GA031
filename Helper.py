@@ -3,8 +3,27 @@ import random
 class Helper:
     @staticmethod
     def getEnsembleMembers(S_set, numMembers: int):
-        if numMembers % 2 != 0:
+        """
+        Receives the S set and choose randomly an odd number of members.
+
+        Returns:
+        -----------
+
+        indexes (list): a list with the corresponding chosen indexes in S set;
+        components (list): a list containing the corresponding components, represented by the 'indexes' list.
+        """
+
+        if numMembers % 2 == 0:
             raise ArithmeticError("Number of members must be odd.")
-        return random.sample(S_set, numMembers)
+
+        values = random.sample(list(enumerate(S_set)), numMembers)        
+        indexes = []
+        components = []
+        
+        for idx, comp in values:
+            indexes.append(idx)
+            components.append(comp)
+
+        return indexes, components
 
 

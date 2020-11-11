@@ -46,7 +46,7 @@ class MetricComputation:
         self.__numCombinations = len(self.__combinations)
         self.__metrics = np.zeros(shape=(self.__numCombinations, len(S_set), len(Vleg_dataset)))
 
-    def __get_metric(self, metric: Metric) -> IMetric:
+    def get_metric(self, metric: Metric) -> IMetric:
         if metric == Metric.JSD: return JSDMetric()
         else: return REMetric()
 
@@ -60,7 +60,7 @@ class MetricComputation:
                     r_image = component.execute(self.__vleg[k])
                     
                     # computes the corresponding metric
-                    self.__metrics[i][j][k] = self.__get_metric(self.__combinations[i][1]).compute(self.__vleg[k], r_image)
+                    self.__metrics[i][j][k] = self.get_metric(self.__combinations[i][1]).compute(self.__vleg[k], r_image)
 
         print(self.__metrics, self.__metrics.shape)
 
@@ -83,7 +83,6 @@ class MetricComputation:
             for j in range(len(self.__sset)):
                 metrics_desc_order = -np.sort(-self.__metrics[i][j]) # sorts in descending order
                 index = math.ceil(self.__combinations[i][0] * len(metrics_desc_order))
-                print("Index: {0}".format(index))
                 tau_set[i][j] = metrics_desc_order[index]
         
         return tau_set, self.__combinations

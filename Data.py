@@ -17,22 +17,24 @@ class ImageDAO:
         
         if dataset == Dataset.Training:
             images, labels = mnist_data.load_training()
-            return images[:numberOfImages], labels[:numberOfImages]
-
         else:
             images, labels = mnist_data.load_testing()
 
         return images[:numberOfImages], labels[:numberOfImages]
 
     @staticmethod
-    def get_Vdataset(images, labels, algorithm: AttackAlgorithm, **params):
+    def get_Vdataset(numberOfImages:int, algorithm: AttackAlgorithm, **params):
         from random import sample
+        import numpy as np, math
         
         attack = Attack()
+        images = list(ImageDAO.get_images(numberOfImages))[0]
         attack.set_attack(images.copy(), algorithm, **params)
         adv_images = sample(attack.perform_attack(), len(images))
         images.extend(list(adv_images))
-        labels.extend(list(labels))
+
+        labels = np.ones(len(images))
+        labels[:(math.ceil(len(images)/2))] = 0
 
         return images, labels
 
@@ -105,6 +107,9 @@ class UserDAO:
         except ValueError as e:
             print(e)
             return False
+
+# i, l = ImageDAO.get_Vdataset(15, AttackAlgorithm.DeepFool, eps=0.3)
+# print(l)
 
 # userDao = UserDAO()
 # print(userDao.get_users_size())
