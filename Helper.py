@@ -1,4 +1,6 @@
 import random
+import numpy as np
+from MetricComputation import ThresholdApproach
 
 class Helper:
     @staticmethod
@@ -26,4 +28,10 @@ class Helper:
 
         return indexes, components
 
+    @staticmethod
+    def apply_threshold_approach(team_metrics, approach = ThresholdApproach.MTA):
+        if approach == ThresholdApproach.minTA:
+            return np.full(len(team_metrics), np.amin(team_metrics))
+        else:
+            return team_metrics
 

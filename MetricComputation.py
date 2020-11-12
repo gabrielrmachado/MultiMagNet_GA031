@@ -23,12 +23,12 @@ class IMetric(ABC):
 class JSDMetric(IMetric):
     def compute(self, image, reconstructed_image, is_adv = 0): 
         if is_adv == 0: return uniform(0.001, 0.01)
-        else: return uniform(0.1, 0.5)
+        else: return uniform(0.005, 0.025)
 
 class REMetric(IMetric):
     def compute(self, image, reconstructed_image, is_adv = 0):
         if is_adv == 0: return uniform(0.0025, 0.025)
-        else: return uniform(0.01, 0.05)
+        else: return uniform(0.005, 0.035)
         
 
 class MetricComputation:
@@ -69,7 +69,7 @@ class MetricComputation:
                     # computes the corresponding metric
                     self.__metrics[i][j][k] = self.get_metric(self.__combinations[i][1]).compute(self.__vleg[k], r_image)
 
-        print(self.__metrics, self.__metrics.shape)
+        # print(self.__metrics, self.__metrics.shape)
 
     def get_tau_set(self): 
         """
