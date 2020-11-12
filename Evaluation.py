@@ -39,7 +39,7 @@ class Assessment:
                         rec_image = members[j].execute(self.__data[k])
                         metric = m.get_metric(self.__combinations[i][1]).compute(self.__data[k], rec_image)
 
-                        if metric <= self.__tau_set[idx[j]]:
+                        if metric <= self.__tau_set[i][idx[j]]:
                             votes[i][j][k] = 0 # image classified as legitimate by member 'j' of the ensemble.
                         else: 
                             votes[i][j][k] = 1 # image classified as adversarial by member 'j' of the ensemble.
@@ -60,7 +60,7 @@ f = Component()
 sset = [f.getComponent(Factory.CAE), f.getComponent(Factory.DAE), f.getComponent(Factory.GAN), f.getComponent(Factory.CAE), 
     f.getComponent(Factory.DAE), f.getComponent(Factory.GAN)]
 
-m = MetricComputation([0.1, 0.2, 0.3, 0.25], [Metric.RE, Metric.JSD], [ThresholdApproach.MTA], ImageDAO.get_images(100)[0], sset)
+m = MetricComputation([0.01, 0.02, 0.05, 0.1], [Metric.RE, Metric.JSD], [ThresholdApproach.MTA], ImageDAO.get_images(100)[0], sset)
 
 tau_set, combinations = m.get_tau_set()
 
