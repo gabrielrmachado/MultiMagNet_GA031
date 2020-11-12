@@ -29,24 +29,29 @@ class Assessment:
     def evaluate(self, m: MetricComputation):
         # always forms up an ensemble containing an odd number of members.
         idx, members = Helper.getEnsembleMembers(self.__s_set, numMembers=random.randrange(1,len(self.__s_set),2))
-        votes = np.zeros(shape=(len(self.__combinations), len(members), len(self.__data)))
+        votes = np.zeros(shape=(len(self.__combinations), len(self.__data)), dtype=int)
 
         for i in range(len(self.__combinations)):
 
-            for j in range(len(members)):
+            for j in range(len(self.__data)):
+                
+                votes_members = np.zeros(len(members), dtype=int)
 
-                for k in range(len(self.__data)):
-                        rec_image = members[j].execute(self.__data[k])
-                        metric = m.get_metric(self.__combinations[i][1]).compute(self.__data[k], rec_image, self.__true_labels[k])
+                for k in range(len(members)):
+                    rec_image = members[k].execute(self.__data[j])
+                    metric = m.get_metric(self.__combinations[i][1]).compute(self.__data[j], rec_image, self.__true_labels[j])
 
-                        if metric <= self.__tau_set[i][idx[j]]:
-                            votes[i][j][k] = 0 # image classified as legitimate by member 'j' of the ensemble.
-                        else: 
-                            votes[i][j][k] = 1 # image classified as adversarial by member 'j' of the ensemble. 
+                    if metric <= self.__tau_set[i][idx[k]]:
+                        votes_members[k] = 0 # image classified as legitimate by member 'j' of the ensemble.
+                    else: 
+                        votes_members[k] = 1 # image classified as adversarial by member 'j' of the ensemble. 
+                
+                ensemble_vote = np.bincount(votes_members).argmax()
+                votes[i][j] = ensemble_vote
 
-                            ### TO-DO: unificar os votos de cada membro do comitê em um único voto!!
+            self.__accuracies[i] = accuracy_score(self.__true_labels, votes[i])
             
-            self.__accuracies[i] = accuracy_score(self.__true_labels, votes[i][j].flatten())
+        # self.__accuracies[i] = accuracy_score(self.__true_labels, votes[i][j].flatten())
 
         print(self.__accuracies, self.__accuracies.shape)
             

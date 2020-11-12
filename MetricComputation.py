@@ -18,16 +18,16 @@ class IMetric(ABC):
     for a given adversarial image, and a smaller metric value for a given legitimate image.
     """
     @abstractmethod
-    def compute(self, image, reconstructed_image, is_adv = False): raise NotImplementedError
+    def compute(self, image, reconstructed_image, is_adv = 0): raise NotImplementedError
 
 class JSDMetric(IMetric):
-    def compute(self, image, reconstructed_image, is_adv = False): 
-        if is_adv: return uniform(0.001, 0.01)
+    def compute(self, image, reconstructed_image, is_adv = 0): 
+        if is_adv == 0: return uniform(0.001, 0.01)
         else: return uniform(0.1, 0.5)
 
 class REMetric(IMetric):
-    def compute(self, image, reconstructed_image, is_adv = False):
-        if is_adv: return uniform(0.0025, 0.025)
+    def compute(self, image, reconstructed_image, is_adv = 0):
+        if is_adv == 0: return uniform(0.0025, 0.025)
         else: return uniform(0.01, 0.05)
         
 
