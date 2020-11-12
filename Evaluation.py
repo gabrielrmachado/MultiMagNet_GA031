@@ -64,21 +64,7 @@ class Assessment:
         self.__best_combination["m"] = self.__combinations[best_combination_idx][1].value
         self.__best_combination["a"] = self.__combinations[best_combination_idx][2].value
 
+        # saves the best combination in the 'fbest.json' for future use.
         with open("data/files/fbest.json", 'w') as fbest_file:
             json.dump(self.__best_combination, fbest_file)
-
-# from Data import ImageDAO, Dataset, AttackAlgorithm
-# from Components import Factory, Component
-
-# f = Component()
-
-# sset = [f.getComponent(Factory.CAE), f.getComponent(Factory.DAE), f.getComponent(Factory.GAN), f.getComponent(Factory.CAE), 
-#     f.getComponent(Factory.DAE), f.getComponent(Factory.GAN)]
-
-# m = MetricComputation([0.01, 0.02, 0.05, 0.1], [Metric.RE, Metric.JSD], [ThresholdApproach.MTA, ThresholdApproach.minTA], ImageDAO.get_images(100)[0], sset)
-
-# tau_set, combinations = m.get_tau_set()
-# vdata, vlabels = ImageDAO.get_Vdataset(200, AttackAlgorithm.FGSM, eps=0.3)
-# a = Assessment(vdata, vlabels, tau_set, sset, combinations)
-# a.evaluate(m)
 
