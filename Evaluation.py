@@ -1,6 +1,7 @@
 from Helper import Helper
 from MetricComputation import MetricComputation, Metric, ThresholdApproach
 import numpy as np
+import json
 import random
 from sklearn.metrics import accuracy_score
 
@@ -57,10 +58,14 @@ class Assessment:
 
             self.__accuracies[i] = accuracy_score(self.__true_labels, votes[i])
 
-        # get the combination which produced the largest accuracy.
-        print(self.__accuracies, self.__accuracies.shape)
+        # get the combination which has produced the largest accuracy.
         best_combination_idx = self.__accuracies.argmax()
-        print(self.__combinations[best_combination_idx])
+        self.__best_combination["fp"] = self.__combinations[best_combination_idx][0]
+        self.__best_combination["m"] = self.__combinations[best_combination_idx][1].value
+        self.__best_combination["a"] = self.__combinations[best_combination_idx][2].value
+
+        with open("data/files/fbest.json", 'w') as fbest_file:
+            json.dump(self.__best_combination, fbest_file)
             
 class Filewriter:
     def __init__(self, fbest_file_path="data/fbest.json", **best_parameters):
@@ -75,8 +80,8 @@ sset = [f.getComponent(Factory.CAE), f.getComponent(Factory.DAE), f.getComponent
     f.getComponent(Factory.DAE), f.getComponent(Factory.GAN)]
 
 m = MetricComputation([0.01, 0.02, 0.05, 0.1], [Metric.RE, Metric.JSD], [ThresholdApproach.MTA, ThresholdApproach.minTA], ImageDAO.get_images(100)[0], sset)
-tau_set, combinations = m.get_tau_set()
 
+tau_set, combinations = m.get_tau_set()
 vdata, vlabels = ImageDAO.get_Vdataset(200, AttackAlgorithm.FGSM, eps=0.3)
 a = Assessment(vdata, vlabels, tau_set, sset, combinations)
 a.evaluate(m)
