@@ -37,12 +37,14 @@ class Assessment:
 
                 for k in range(len(self.__data)):
                         rec_image = members[j].execute(self.__data[k])
-                        metric = m.get_metric(self.__combinations[i][1]).compute(self.__data[k], rec_image)
+                        metric = m.get_metric(self.__combinations[i][1]).compute(self.__data[k], rec_image, self.__true_labels[k])
 
                         if metric <= self.__tau_set[i][idx[j]]:
                             votes[i][j][k] = 0 # image classified as legitimate by member 'j' of the ensemble.
                         else: 
-                            votes[i][j][k] = 1 # image classified as adversarial by member 'j' of the ensemble.
+                            votes[i][j][k] = 1 # image classified as adversarial by member 'j' of the ensemble. 
+
+                            ### TO-DO: unificar os votos de cada membro do comitê em um único voto!!
             
             self.__accuracies[i] = accuracy_score(self.__true_labels, votes[i][j].flatten())
 
@@ -61,7 +63,6 @@ sset = [f.getComponent(Factory.CAE), f.getComponent(Factory.DAE), f.getComponent
     f.getComponent(Factory.DAE), f.getComponent(Factory.GAN)]
 
 m = MetricComputation([0.01, 0.02, 0.05, 0.1], [Metric.RE, Metric.JSD], [ThresholdApproach.MTA], ImageDAO.get_images(100)[0], sset)
-
 tau_set, combinations = m.get_tau_set()
 
 vdata, vlabels = ImageDAO.get_Vdataset(200, AttackAlgorithm.FGSM, eps=0.3)

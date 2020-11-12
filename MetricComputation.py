@@ -13,16 +13,23 @@ class ThresholdApproach(Enum):
     minTA = 2
 
 class IMetric(ABC):
+    """
+    Metrics interface. The parameter 'is_adv' simulates a bigger metric value 
+    for a given adversarial image, and a smaller metric value for a given legitimate image.
+    """
     @abstractmethod
-    def compute(self, image, reconstructed_image): raise NotImplementedError
+    def compute(self, image, reconstructed_image, is_adv = False): raise NotImplementedError
 
 class JSDMetric(IMetric):
-    def compute(self, image, reconstructed_image):
-        return uniform(0.001, 0.01)
+    def compute(self, image, reconstructed_image, is_adv = False): 
+        if is_adv: return uniform(0.001, 0.01)
+        else: return uniform(0.1, 0.5)
 
 class REMetric(IMetric):
-    def compute(self, image, reconstructed_image):
-        return uniform(0.0025, 0.025)
+    def compute(self, image, reconstructed_image, is_adv = False):
+        if is_adv: return uniform(0.0025, 0.025)
+        else: return uniform(0.01, 0.05)
+        
 
 class MetricComputation:
     """
