@@ -66,10 +66,6 @@ class Assessment:
 
         with open("data/files/fbest.json", 'w') as fbest_file:
             json.dump(self.__best_combination, fbest_file)
-            
-class Filewriter:
-    def __init__(self, fbest_file_path="data/fbest.json", **best_parameters):
-        pass
 
 # from Data import ImageDAO, Dataset, AttackAlgorithm
 # from Components import Factory, Component
