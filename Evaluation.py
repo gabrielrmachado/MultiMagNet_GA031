@@ -26,7 +26,6 @@ class Assessment:
         self.__combinations = combinations
         self.__accuracies = np.zeros(len(self.__combinations))
 
-
     def evaluate(self, m: MetricComputation):
         # always forms up an ensemble containing an odd number of members.
         idx, members = Helper.getEnsembleMembers(self.__s_set, numMembers=random.randrange(1,len(self.__s_set),2))

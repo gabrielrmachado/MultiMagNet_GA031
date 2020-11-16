@@ -68,8 +68,6 @@ class MetricComputation:
                     # computes the corresponding metric
                     self.__metrics[i][j][k] = self.get_metric(self.__combinations[i][1]).compute(self.__vleg[k], r_image)
 
-        # print(self.__metrics, self.__metrics.shape)
-
     def get_tau_set(self): 
         """
         Computes the threshold set "TAU" for each defense component. It contains 'c' times 'm' thresholds.
@@ -92,19 +90,3 @@ class MetricComputation:
                 tau_set[i][j] = metrics_desc_order[index]
         
         return tau_set, self.__combinations
-
-# from Data import ImageDAO, Dataset, AttackAlgorithm
-# from Components import Factory, Component
-
-# f = Component()
-# m = MetricComputation([0.1, 0.2, 0.3, 0.25], [Metric.RE, Metric.JSD], [ThresholdApproach.MTA], ImageDAO.get_images(100)[0], [f.getComponent(Factory.CAE), f.getComponent(Factory.DAE), f.getComponent(Factory.GAN)])
-# tau_set, _ = m.get_tau_set()
-# print(tau_set, tau_set.shape)
-
-# from Data import ImageDAO, Dataset, AttackAlgorithm
-
-# i, l = ImageDAO.get_images(255, Dataset.Training)
-# print(len(i), len(l))
-
-# iadv, ladv = ImageDAO.get_Vdataset(i, l, AttackAlgorithm.FGSM, eps=0.3)
-# print(len(iadv), len(ladv))

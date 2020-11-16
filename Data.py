@@ -108,14 +108,5 @@ class UserDAO:
             print(e)
             return False
 
-# i, l = ImageDAO.get_Vdataset(15, AttackAlgorithm.DeepFool, eps=0.3)
-# print(l)
-
-# userDao = UserDAO()
-# print(userDao.get_users_size())
-# userDao.delete_user(userDao.get_users_size()-1)
-# # userDao.update_user(1, "Gabriel Resende Machado", "445566")
-# userDao.create_user("Sabrina", "sag_22311as", 2)
-# print(userDao.get_users_size())
-
-# ImageDAO.get_adv_images(ImageDAO.get_images(), AttackAlgorithm.CW, eps=0.3, n_iter=100, alpha=0.01)
+# "Gabriel Resende Machado", "445566"
+# "Sabrina", "sag_22311as"

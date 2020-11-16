@@ -11,16 +11,16 @@ class IFile(ABC):
     def read(self, ffile_path) -> dict: raise NotImplementedError
 
 class FFile(IFile):
-    def write(self, ffile_path, **calibration_params):
-        with open(ffile_path, 'w') as ffile_file:
+    def write(self, path, **calibration_params):
+        with open(path, 'w') as ffile_file:
             json.dump(calibration_params, ffile_file)
-    def read(self, ffile_path):
-        with open(ffile_path) as ffile_file:
+    def read(self, path):
+        with open(path) as ffile_file:
             return json.load(ffile_file)
 
 class FBestFile(IFile):
-    def read(self, ffile_path):
-        with open(ffile_path) as fbest_file:
+    def read(self, path):
+        with open(path) as fbest_file:
             return json.load(fbest_file)
 
 class Parameterizer:
@@ -39,11 +39,8 @@ class Parameterizer:
     #     self.__file.__class__ = FFile
     #     self.__file.write(self.__path, **params)
     
-    def get_parameters(self):
-        return self.__file.read(self.__path)
-
-# from MetricComputation import Metric, MetricComputation, ThresholdApproach
-# p = Parameterizer(FileType.F_file)
-# # p.write_ffile(fp=[0.01, 0.02, 0.05, 0.1], m=[Metric.RE.value, Metric.JSD.value], a=[ThresholdApproach.MTA.value, ThresholdApproach.minTA.value])
-# params = p.get_parameters()
-# print(params["fp"])
+    def get_parameters(self, read_tb_file=False):
+        if read_tb_file == False:
+            return self.__file.read(self.__path)
+        else: 
+            return self.__file.read("data/files/tb.json")

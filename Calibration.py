@@ -34,5 +34,5 @@ class ParameterTuning:
         a = Assessment(vdata, vlabels, tau_set, sset, combinations)
         a.evaluate(m)
 
-p = ParameterTuning()
-p.calibrate(150)
+# p = ParameterTuning()
+# p.calibrate(150)
