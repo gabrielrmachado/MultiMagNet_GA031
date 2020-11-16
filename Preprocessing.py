@@ -59,8 +59,8 @@ class PreprocessingManager:
 
         image (Image): the image object that will be preprocessed.
         **operations (dict):  the list of preprocessing techniques which will be applied in the image. They can be:
-            - ro (rotation): simulates an image rotation. The degrees must be passed along (eg.: ro: 30)
-            - rz (resize): simulates an image resizing. The values must be passed along (eg.: rz: 32x32)  
+            - ro (rotation): simulates an image rotation. The degrees must be passed along (eg.: ro=30)
+            - rz (resize): simulates an image resizing. The values must be passed along (eg.: rz=32x32)  
             - sm (smoothing): simulates an image smoothing. No values are passed. 
     """
     def __init__(self, image: Image, **operations):

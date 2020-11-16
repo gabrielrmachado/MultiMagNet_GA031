@@ -34,5 +34,7 @@ class ParameterTuning:
         a = Assessment(vdata, vlabels, tau_set, sset, combinations)
         a.evaluate(m)
 
-# p = ParameterTuning()
-# p.calibrate(150)
+        print("\nFbest and Tb files have been saved successfully.")
+
+p = ParameterTuning()
+p.calibrate(150)
