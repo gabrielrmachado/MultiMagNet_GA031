@@ -63,8 +63,14 @@ class Assessment:
         self.__best_combination["fp"] = self.__combinations[best_combination_idx][0]
         self.__best_combination["m"] = self.__combinations[best_combination_idx][1]
         self.__best_combination["a"] = self.__combinations[best_combination_idx][2]
+        
+        # get the Tb thresholds set which produced the largest accuracy.
+        indexes = [i for i in range(len(self.__s_set))]
+        self.__tb = dict(zip(indexes, self.__tau_set[best_combination_idx]))
 
-        # saves the best combination in the 'fbest.json' for future use.
+        # saves the best combination and their corresponding thresholds in the 'fbest.json' and 'thresholds.json' for future use.
         with open("data/files/fbest.json", 'w') as fbest_file:
             json.dump(self.__best_combination, fbest_file)
 
+        with open("data/files/tb.json", 'w') as tb_file:
+            json.dump(self.__tb, tb_file)
