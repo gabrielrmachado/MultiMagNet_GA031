@@ -18,6 +18,9 @@ class User:
     def get_priority_logged_user(self):
         return self.__user_data[2]
 
+    def get_name_user(self):
+        return self.__user_data[0]
+
 # user = User()
 # user.login(3)
 # print(user.get_priority_logged_user())

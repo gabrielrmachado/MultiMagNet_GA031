@@ -61,8 +61,8 @@ class Assessment:
         # get the combination which has produced the largest accuracy.
         best_combination_idx = self.__accuracies.argmax()
         self.__best_combination["fp"] = self.__combinations[best_combination_idx][0]
-        self.__best_combination["m"] = self.__combinations[best_combination_idx][1].value
-        self.__best_combination["a"] = self.__combinations[best_combination_idx][2].value
+        self.__best_combination["m"] = self.__combinations[best_combination_idx][1]
+        self.__best_combination["a"] = self.__combinations[best_combination_idx][2]
 
         # saves the best combination in the 'fbest.json' for future use.
         with open("data/files/fbest.json", 'w') as fbest_file:

@@ -30,7 +30,6 @@ class REMetric(IMetric):
         if is_adv == 0: return uniform(0.0025, 0.025)
         else: return uniform(0.005, 0.035)
         
-
 class MetricComputation:
     """
     Computes the metric values of each defense component using only legitimate images.
@@ -40,18 +39,18 @@ class MetricComputation:
     FP (list<double>): the false positive set;
     M (list<Metric>): a list with the metrics enumerations;
     A (list<ThresholdApproach>) a list with threshold approaches to be tested;
-    Vleg_dataset (list): the Vleg dataset containing only legitimate images;
+    images (list): the Vleg dataset containing only legitimate images;
     S_set (list): a list containing all the defense components.
     """
-    def __init__(self, FP, M, A, Vleg_dataset, S_set):
+    def __init__(self, FP, M, A, images, S_set):
         self.__FP = FP
-        self.__M = M
-        self.__A = A
-        self.__vleg = Vleg_dataset
+        self.__M = [Metric(m).name for m in M]
+        self.__A = [ThresholdApproach(a).name for a in A]
+        self.__vleg = images
         self.__sset = S_set
         self.__combinations = list(product(FP, M, A))
         self.__numCombinations = len(self.__combinations)
-        self.__metrics = np.zeros(shape=(self.__numCombinations, len(S_set), len(Vleg_dataset)))
+        self.__metrics = np.zeros(shape=(self.__numCombinations, len(S_set), len(images)))
 
     def get_metric(self, metric: Metric) -> IMetric:
         if metric == Metric.JSD: return JSDMetric()
