@@ -59,10 +59,4 @@ class ExecutionManager:
             r = Reformation(self.__sset, image)
             r.reform()
 
-# e = ExecutionManager()
-
-# from Data import ImageDAO
-# import random
-# e.run(Image(ImageDAO.get_images(1), random.randint(1, 100)), ro=90, rz="32x32", sm=[])
-
         
