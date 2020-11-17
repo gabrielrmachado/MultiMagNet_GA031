@@ -9,7 +9,7 @@ class Helper:
         Receives the S set and choose randomly an odd number of members.
 
         Returns:
-        -----------
+        --------------
 
         indexes (list): a list with the corresponding chosen indexes in S set;
         components (list): a list containing the corresponding components, represented by the 'indexes' list.
@@ -30,7 +30,7 @@ class Helper:
 
     @staticmethod
     def apply_threshold_approach(team_metrics, approach = ThresholdApproach.MTA):
-        if approach == ThresholdApproach.minTA:
+        if approach == ThresholdApproach.minTA.value:
             return np.full(len(team_metrics), np.amin(team_metrics))
         else:
             return team_metrics

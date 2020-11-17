@@ -19,6 +19,9 @@ class Image(IPreprocessor):
     def get_image_arr(self):
         return self._image[0][0]
 
+    def get_image_id(self):
+        return self.__id
+
     def get_shape(self):
         h = math.sqrt(len(self._image))
         print("{0}x{1}x{2}".format(h, h, 1))

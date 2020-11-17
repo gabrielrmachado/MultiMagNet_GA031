@@ -4,6 +4,7 @@ from MetricComputation import Metric, MetricComputation, ThresholdApproach
 from Components import Factory, Component
 from Detection import Detection
 from Reformation import Reformation
+from Helper import Helper
 
 class ExecutionManager:
     def __init__(self, folder_fbest_tb_files = "/data/files"):
@@ -20,28 +21,44 @@ class ExecutionManager:
 
 
     def run(self, image: Image, **preprocessing_params):
+        import random
+
         # preprocesses the image according to the settings in 'preprocessing_params'.
         preprocessing = PreprocessingManager(image, **preprocessing_params)
         preprocessing.apply()
 
-        # computes the Vm set.
-        m = MetricComputation(self.__fb["fp"], self.__fb["m"], self.__fb["a"], image, self.__sset, False)
-        vm = m.get_tau_set()
+        indexes, _ = Helper.getEnsembleMembers(self.__sset, random.randrange(1, len(self.__sset), 2))    
+        vm = []
+        tb_members = []
+
+        # gets the metric values of each member for the input image.
+        for i in indexes:
+            rec_image = self.__sset[i].execute(image.get_image_arr())
+            value_metric = MetricComputation.get_metric(Metric(self.__fb["m"])).compute(image.get_image_arr(), rec_image, random.randint(0, 1))
+            vm.append(value_metric)
+        
+        for i in [str(idx) for idx in indexes]:
+            tb_members.append(self.__tb[i])
+
+        # apply the threshold approach.
+        tb_members = Helper.apply_threshold_approach(tb_members, self.__fb['a'])
 
         # checks whether the input image is adversarial or not.
-        d = Detection(vm, self.__tb)
+        d = Detection(vm, tb_members)
         ans = d.detect()
 
         if ans == False:
-            print("Image {0} has been detected as adversarial and will be discarted.")
+            print("\nImage {0} has been detected as adversarial and will be discarted.\n".format(image.get_image_id()))
         else:
+            print("\nImage {0} is going to be reformed.\n".format(image.get_image_id()))
             # if the image is considered as legitimate, it is reformed.
             r = Reformation(self.__sset, image)
-            r.reformer()
+            r.reform()
 
 e = ExecutionManager()
 
 from Data import ImageDAO
-e.run(Image(ImageDAO.get_images(1), 25), ro=90, rz="32x32", sm=[])
+import random
+e.run(Image(ImageDAO.get_images(1), random.randint(1, 100)), ro=90, rz="32x32", sm=[])
 
         

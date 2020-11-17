@@ -28,7 +28,7 @@ class Assessment:
 
     def evaluate(self, m: MetricComputation):
         # always forms up an ensemble containing an odd number of members.
-        idx, members = Helper.getEnsembleMembers(self.__s_set, numMembers=random.randrange(1,len(self.__s_set),2))
+        idx, members = Helper.getEnsembleMembers(self.__s_set, random.randrange(1, len(self.__s_set), 2))
         votes = np.zeros(shape=(len(self.__combinations), len(self.__data)), dtype=int)
         team_metrics = np.zeros(len(members))
 
@@ -59,9 +59,9 @@ class Assessment:
 
         # get the combination which has produced the largest accuracy.
         best_combination_idx = self.__accuracies.argmax()
-        self.__best_combination["fp"] = [self.__combinations[best_combination_idx][0]]
-        self.__best_combination["m"] = [self.__combinations[best_combination_idx][1]]
-        self.__best_combination["a"] = [self.__combinations[best_combination_idx][2]]
+        self.__best_combination["fp"] = self.__combinations[best_combination_idx][0]
+        self.__best_combination["m"] = self.__combinations[best_combination_idx][1]
+        self.__best_combination["a"] = self.__combinations[best_combination_idx][2]
         
         # get the Tb thresholds set which produced the largest accuracy.
         indexes = [i for i in range(len(self.__s_set))]

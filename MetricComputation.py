@@ -41,10 +41,9 @@ class MetricComputation:
     M (list<Metric>): a list containing the metric enumerations;
     A (list<ThresholdApproach>) a list containing the threshold approaches to be tested;
     images (list): the Vleg dataset containing only legitimate images;
-    S_set (list): a list containing all the defense components;
-    calibration (bool): if the class is being called from Calibration Stage.
+    S_set (list): a list containing all the defense components.
     """
-    def __init__(self, FP, M, A, images, S_set, calibration=True):
+    def __init__(self, FP, M, A, images, S_set):
         self.__FP = FP
         self.__M = [Metric(m).name for m in M]
         self.__A = [ThresholdApproach(a).name for a in A]
@@ -52,14 +51,10 @@ class MetricComputation:
         self.__sset = S_set
         self.__combinations = list(product(FP, M, A))
         self.__numCombinations = len(self.__combinations)
-        self.__calibration = calibration
+        self.__metrics = np.zeros(shape=(self.__numCombinations, len(S_set), len(images)))
 
-        if calibration == True: 
-            self.__metrics = np.zeros(shape=(self.__numCombinations, len(S_set), len(images)))
-        else: 
-            self.__metrics = np.zeros(shape=(self.__numCombinations, len(S_set), 1))
-
-    def get_metric(self, metric: Metric) -> IMetric:
+    @staticmethod
+    def get_metric(metric: Metric) -> IMetric:
         if metric == Metric.JSD: return JSDMetric()
         else: return REMetric()
 
@@ -73,19 +68,7 @@ class MetricComputation:
                     r_image = component.execute(self.__vleg[k])
                     
                     # computes the corresponding metric
-                    self.__metrics[i][j][k] = self.get_metric(self.__combinations[i][1]).compute(self.__vleg[k], r_image)
-
-    def __compute_metrics_deployment(self):        
-        for i in range(self.__numCombinations):
-
-            for j in range(len(self.__sset)):
-                component = self.__sset[j]
-
-                for k in range(1):
-                    r_image = component.execute(self.__vleg.get_image_arr())
-                    
-                    # computes the corresponding metric
-                    self.__metrics[i][j][k] = self.get_metric(self.__combinations[i][1]).compute(self.__vleg.get_image_arr(), r_image)
+                    self.__metrics[i][j][k] = MetricComputation.get_metric(self.__combinations[i][1]).compute(self.__vleg[k], r_image)
 
     def get_tau_set(self): 
         """
@@ -100,10 +83,7 @@ class MetricComputation:
         import math
         tau_set = np.zeros(shape=(self.__numCombinations, len(self.__sset)))
 
-        if self.__calibration == True:
-            self.__compute_metrics()
-        else:
-            self.__compute_metrics_deployment()
+        self.__compute_metrics()
 
         for i in range(self.__numCombinations): 
             for j in range(len(self.__sset)):
