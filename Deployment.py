@@ -52,7 +52,7 @@ class ExecutionManager:
         print("\nImage {0} is {1}".format(image.get_image_id(), "legitimate" if is_adv == 0  else "adversarial"))
 
         if ans == False:
-            print("Image {0} has been detected as adversarial and will be discarted.\n".format(image.get_image_id()))
+            print("Image {0} has been detected as adversarial and will be discarded.\n".format(image.get_image_id()))
         else:
             print("Image {0} is going to be reformed.\n".format(image.get_image_id()))
             # if the image is considered as legitimate, it is reformed.
