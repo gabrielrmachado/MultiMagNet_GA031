@@ -36,6 +36,3 @@ class MultiMagNet:
                 print("Analysing image {0}...".format(images[i].get_image_id()))
                 sleep(0.1)
                 self.__runner.run(images[i], ro=90, rz=[32,32], sm=[])
-        
-multimagnet = MultiMagNet()
-multimagnet.run()
