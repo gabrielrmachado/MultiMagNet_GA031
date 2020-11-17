@@ -16,7 +16,7 @@ class ParameterTuning:
         if user.get_priority_logged_user() > 1:
             raise PermissionError("Sorry, user {0} is not allowed to perform calibrations on MultiMagNet.".format(user.get_name_user()))
 
-    def calibrate(self, qty_vleg_images):
+    def calibrate(self, qtd_leg_images):
         # simulates the loading process of all the components from S set.
         f = Component()
         
@@ -26,15 +26,12 @@ class ParameterTuning:
         # reads parameters from F file to be tested.
         file_reader = Parameterizer()
         params = file_reader.get_parameters(FileType.F_file)
-        m = MetricComputation(params['fp'], params['m'], params['a'], ImageDAO.get_images(qty_vleg_images)[0], sset)
+        m = MetricComputation(params['fp'], params['m'], params['a'], ImageDAO.get_images(qtd_leg_images)[0], sset)
 
         # computes 'Tau' set and saves the best set of parameters in 'fbest.json' file.
         tau_set, combinations = m.get_tau_set()
-        vdata, vlabels = ImageDAO.get_Vdataset(qty_vleg_images*2, AttackAlgorithm.FGSM, eps=0.3)
+        vdata, vlabels = ImageDAO.get_Vdataset(qtd_leg_images*2, AttackAlgorithm.FGSM, eps=0.3)
         a = Assessment(vdata, vlabels, tau_set, sset, combinations)
         a.evaluate(m)
 
         print("\nFbest and Tb files have been saved successfully.")
-
-p = ParameterTuning()
-p.calibrate(150)

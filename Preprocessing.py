@@ -17,7 +17,7 @@ class Image(IPreprocessor):
         print(self.__mnist_data.display(self._image))
     
     def get_image_arr(self):
-        return self._image[0][0]
+        return self._image[0]
 
     def get_image_id(self):
         return self.__id
