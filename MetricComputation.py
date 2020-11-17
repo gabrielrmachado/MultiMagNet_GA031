@@ -24,12 +24,12 @@ class IMetric(ABC):
 class JSDMetric(IMetric):
     def compute(self, image, reconstructed_image, is_adv = 0): 
         if is_adv == 0: return uniform(0.001, 0.01)
-        else: return uniform(0.005, 0.025)
+        else: return uniform(0.02, 0.025)
 
 class REMetric(IMetric):
     def compute(self, image, reconstructed_image, is_adv = 0):
         if is_adv == 0: return uniform(0.0025, 0.025)
-        else: return uniform(0.005, 0.035)
+        else: return uniform(0.025, 0.035)
         
 class MetricComputation:
     """
