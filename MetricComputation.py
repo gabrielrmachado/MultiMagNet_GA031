@@ -3,6 +3,7 @@ from enum import Enum
 import numpy as np
 from random import uniform
 from itertools import product
+from Preprocessing import Image
 
 class Metric(Enum):
     RE = 1
@@ -37,12 +38,13 @@ class MetricComputation:
     Parameters:
     --------------
     FP (list<double>): the false positive set;
-    M (list<Metric>): a list with the metrics enumerations;
-    A (list<ThresholdApproach>) a list with threshold approaches to be tested;
+    M (list<Metric>): a list containing the metric enumerations;
+    A (list<ThresholdApproach>) a list containing the threshold approaches to be tested;
     images (list): the Vleg dataset containing only legitimate images;
-    S_set (list): a list containing all the defense components.
+    S_set (list): a list containing all the defense components;
+    calibration (bool): if the class is being called from Calibration Stage.
     """
-    def __init__(self, FP, M, A, images, S_set):
+    def __init__(self, FP, M, A, images, S_set, calibration=True):
         self.__FP = FP
         self.__M = [Metric(m).name for m in M]
         self.__A = [ThresholdApproach(a).name for a in A]
@@ -50,7 +52,12 @@ class MetricComputation:
         self.__sset = S_set
         self.__combinations = list(product(FP, M, A))
         self.__numCombinations = len(self.__combinations)
-        self.__metrics = np.zeros(shape=(self.__numCombinations, len(S_set), len(images)))
+        self.__calibration = calibration
+
+        if calibration == True: 
+            self.__metrics = np.zeros(shape=(self.__numCombinations, len(S_set), len(images)))
+        else: 
+            self.__metrics = np.zeros(shape=(self.__numCombinations, len(S_set), 1))
 
     def get_metric(self, metric: Metric) -> IMetric:
         if metric == Metric.JSD: return JSDMetric()
@@ -68,6 +75,18 @@ class MetricComputation:
                     # computes the corresponding metric
                     self.__metrics[i][j][k] = self.get_metric(self.__combinations[i][1]).compute(self.__vleg[k], r_image)
 
+    def __compute_metrics_deployment(self):        
+        for i in range(self.__numCombinations):
+
+            for j in range(len(self.__sset)):
+                component = self.__sset[j]
+
+                for k in range(1):
+                    r_image = component.execute(self.__vleg.get_image_arr())
+                    
+                    # computes the corresponding metric
+                    self.__metrics[i][j][k] = self.get_metric(self.__combinations[i][1]).compute(self.__vleg.get_image_arr(), r_image)
+
     def get_tau_set(self): 
         """
         Computes the threshold set "TAU" for each defense component. It contains 'c' times 'm' thresholds.
@@ -81,7 +100,10 @@ class MetricComputation:
         import math
         tau_set = np.zeros(shape=(self.__numCombinations, len(self.__sset)))
 
-        self.__compute_metrics()
+        if self.__calibration == True:
+            self.__compute_metrics()
+        else:
+            self.__compute_metrics_deployment()
 
         for i in range(self.__numCombinations): 
             for j in range(len(self.__sset)):

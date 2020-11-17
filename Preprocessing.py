@@ -15,6 +15,9 @@ class Image(IPreprocessor):
         
     def print_image(self):
         print(self.__mnist_data.display(self._image))
+    
+    def get_image_arr(self):
+        return self._image[0][0]
 
     def get_shape(self):
         h = math.sqrt(len(self._image))
@@ -60,7 +63,7 @@ class PreprocessingManager:
         image (Image): the image object that will be preprocessed.
         **operations (dict):  the list of preprocessing techniques which will be applied in the image. They can be:
             - ro (rotation): simulates an image rotation. The degrees must be passed along (eg.: ro=30)
-            - rz (resize): simulates an image resizing. The values must be passed along (eg.: rz=32x32)  
+            - rz (resize): simulates an image resizing. The values must be passed along (eg.: rz="32x32")  
             - sm (smoothing): simulates an image smoothing. No values are passed. 
     """
     def __init__(self, image: Image, **operations):
@@ -80,5 +83,3 @@ class PreprocessingManager:
         print(self.__image.apply())
 
         
-# preprocessing = PreprocessingManager(Image(None, 23), sm=[], ro=90, rz=[32,32])
-# preprocessing.apply()

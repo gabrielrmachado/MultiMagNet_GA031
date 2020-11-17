@@ -5,6 +5,7 @@ import json
 class FileType(Enum):
     F_file = 1
     Fbest_file = 2
+    Tb_file = 3
 
 class IFile(ABC):
     @abstractmethod
@@ -23,24 +24,28 @@ class FBestFile(IFile):
         with open(path) as fbest_file:
             return json.load(fbest_file)
 
+class TbFile(IFile):
+    def read(self, path):
+        with open(path) as tb_file:
+            return json.load(tb_file)
+
 class Parameterizer:
-    def __init__(self, fileType: FileType, path = "data/files"):
-        import os
+    def __init__(self, path = "data/files"):
         self.__file: IFile
+        self.__path = path
+    
+    def get_parameters(self, fileType: FileType):
+        import os
 
         if fileType == FileType.F_file:
             self.__file = FFile()
-            self.__path = path = os.path.join(path, "ffile.json")
-        else:
+            path = os.path.join(self.__path, "ffile.json")
+        elif fileType == FileType.Fbest_file:
             self.__file = FBestFile()
-            self.__path = path = os.path.join(path, "fbest.json")
+            path = os.path.join(self.__path, "fbest.json")
+        else:
+            self.__file = TbFile()
+            path = os.path.join(self.__path, "tb.json")
 
-    # def write_ffile(self, **params):
-    #     self.__file.__class__ = FFile
-    #     self.__file.write(self.__path, **params)
-    
-    def get_parameters(self, read_tb_file=False):
-        if read_tb_file == False:
-            return self.__file.read(self.__path)
-        else: 
-            return self.__file.read("data/files/tb.json")
+        return self.__file.read(path)
+

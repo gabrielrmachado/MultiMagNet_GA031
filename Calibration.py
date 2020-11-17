@@ -24,8 +24,8 @@ class ParameterTuning:
             f.getComponent(Factory.DAE), f.getComponent(Factory.GAN)]
 
         # reads parameters from F file to be tested.
-        file_reader = Parameterizer(FileType.F_file)
-        params = file_reader.get_parameters()
+        file_reader = Parameterizer()
+        params = file_reader.get_parameters(FileType.F_file)
         m = MetricComputation(params['fp'], params['m'], params['a'], ImageDAO.get_images(qty_vleg_images)[0], sset)
 
         # computes 'Tau' set and saves the best set of parameters in 'fbest.json' file.
