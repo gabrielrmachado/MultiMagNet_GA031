@@ -1,6 +1,6 @@
 from Calibration import ParameterTuning
 from Deployment import ExecutionManager
-from Data import ImageDAO # simulation purposes only.
+from Data import ImageDAO       # simulation purposes only.
 from Preprocessing import Image # simulation purposes only.
 from random import randint
 from time import sleep

@@ -1,4 +1,5 @@
 __pycache__/*
 data/users/*
 data/files/*
+modules/__pycache__/*
 !data/files/ffile.json
