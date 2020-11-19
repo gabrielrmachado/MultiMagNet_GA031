@@ -30,7 +30,7 @@ class ParameterTuning:
 
         # computes 'Tau' set and saves the best set of parameters in 'fbest.json' file.
         tau_set, combinations = m.get_tau_set()
-        vdata, vlabels = ImageDAO.get_Vdataset(qtd_leg_images*2, AttackAlgorithm.FGSM, eps=0.3)
+        vdata, vlabels = ImageDAO.get_Vdataset(qtd_leg_images, AttackAlgorithm.FGSM, eps=0.3)
         a = Assessment(vdata, vlabels, tau_set, sset, combinations)
         a.evaluate(m)
 
