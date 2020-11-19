@@ -27,7 +27,7 @@ $ export PYTHONPATH="$PYTHONPATH:/path_to_project_folder/modules"
 $ python3 modules/__main__.py
 ```
 
-# Running the tests
+# Executando os testes
 
 1. Adicione a pasta _tests_ no no `PYTHONPATH`:
 
