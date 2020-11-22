@@ -35,4 +35,4 @@ class MultiMagNet:
             for i in range(qtd_dummy_images):
                 print("Analysing image {0}...".format(images[i].get_image_id()))
                 sleep(0.1)
-                self.__runner.run(images[i], ro=90, rz=[32,32], sm=[])
+                self.__runner.run(images[i], ro=90, rz=[28,28], sm=[])

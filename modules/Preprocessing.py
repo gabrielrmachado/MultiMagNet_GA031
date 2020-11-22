@@ -23,8 +23,8 @@ class Image(IPreprocessor):
         return self.__id
 
     def get_shape(self):
-        h = math.sqrt(len(self._image))
-        print("{0}x{1}x{2}".format(h, h, 1))
+        h = int(math.sqrt(len(self._image.get_image_arr())))
+        return (h,h)
 
     def apply(self):
         return "Image {0}".format(self.__id)
@@ -49,7 +49,15 @@ class Resize(PreprocessorDecorator):
         super().__init__(image, *params)
 
     def apply(self):
-        return self._image.apply() + ", resized to {0}x{1}x1".format(self._params[0], self._params[1])
+        from copy import deepcopy
+
+        image = deepcopy(self._image)
+        image.__class__ = Image
+        
+        if image.get_shape() != self._params:
+            return self._image.apply() + ", resized to {0}x{1}x1".format(self._params[0], self._params[1])
+        else:
+            return self._image.apply() + ", no resized"
 
 class Smoothing(PreprocessorDecorator):
     def __init__(self, image: IPreprocessor, *params):

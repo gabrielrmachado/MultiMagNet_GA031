@@ -25,7 +25,7 @@ class ExecutionManager:
 
         # preprocesses the image according to the settings in 'preprocessing_params'.
         preprocessing = PreprocessingManager(image, **preprocessing_params)
-        preprocessing.apply()
+        preprocessing.apply()   
 
         indexes, _ = Helper.getEnsembleMembers(self.__sset, random.randrange(1, len(self.__sset), 2))    
         vm = []
