@@ -24,15 +24,15 @@ class MultiMagNet:
         else:
             print("Running MultiMagNet...\n")
             self.__runner = ExecutionManager()
-            qtd_dummy_images = 100
+            qtd_dummy_images = 20
             images = []
             dummy_images, _ = ImageDAO.get_images(qtd_dummy_images)
 
-            # creating dummy image objects in order to simulate the capture system...
+            # creates dummy image objects in order to simulate the capture system...
             for i in range(qtd_dummy_images):
                 images.append(Image([dummy_images[i]], randint(1, qtd_dummy_images)))
 
             for i in range(qtd_dummy_images):
-                print("Analysing image {0}...".format(images[i].get_image_id()))
-                sleep(0.1)
+                print("\nANALYSING IMAGE {0}...".format(images[i].get_image_id()))
+                sleep(1)
                 self.__runner.run(images[i], ro=90, rz=[28,28], sm=[])
