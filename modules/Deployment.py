@@ -53,9 +53,8 @@ class ExecutionManager:
 
         if ans == False:
             print("Image {0} has been detected as adversarial and will be discarded.\n".format(image.get_image_id()))
-        else:
+        else: # if the image is considered as legitimate, it will be reformed.
             print("Image {0} is going to be reformed.\n".format(image.get_image_id()))
-            # if the image is considered as legitimate, it is reformed.
             r = Reformation(self.__sset, image)
             r.reform()
 
