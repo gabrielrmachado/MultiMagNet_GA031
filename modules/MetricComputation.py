@@ -58,7 +58,7 @@ class MetricComputation:
         if metric == Metric.JSD: return JSDMetric()
         else: return REMetric()
 
-    def __compute_metrics(self):        
+    def compute_metrics(self):        
         for i in range(self.__numCombinations):
 
             for j in range(len(self.__sset)):
@@ -70,6 +70,8 @@ class MetricComputation:
                     # computes the corresponding metric
                     self.__metrics[i][j][k] = MetricComputation.get_metric(self.__combinations[i][1]).compute(self.__vleg[k], r_image)
 
+        return self.__metrics
+
     def get_tau_set(self): 
         """
         Computes the threshold set "TAU" for each defense component. It contains 'c' times 'm' thresholds.
@@ -78,12 +80,12 @@ class MetricComputation:
         --------------
         tau_set (np.ndarray): A 'c' x 'm' matrix. Each row corresponds to a combination, each cell to a component and each cell to a threshold.
 
-        combinations (list): The list containing the parameter combinations.
+        combinations (list): The list containing the parameter's combinations.
         """
         import math
         tau_set = np.zeros(shape=(self.__numCombinations, len(self.__sset)))
 
-        self.__compute_metrics()
+        self.compute_metrics()
 
         for i in range(self.__numCombinations): 
             for j in range(len(self.__sset)):

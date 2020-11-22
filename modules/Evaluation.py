@@ -15,7 +15,7 @@ class Assessment:
     Vlabels: the corresponding labels for each image in the V dataset;
     tau_set: the set containing the 'm.c' thresholds (computed from legitimate images)
     s_set: the set containing 'm' defense components, used to compute the Tau_set;
-    combinations: the list containing the parameter combinations.
+    combinations: the list containing the parameter's combinations.
     """
     def __init__(self, Vdata, Vlabels, tau_set, s_set, combinations):
         self.__data = Vdata
