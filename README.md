@@ -4,6 +4,8 @@ _Código-fonte e implementação dos casos de testes relatados no Trabalho 2._
 
 ## Instalando as dependências
 
+Abra o terminal e entre com os seguintes comandos para instalar as dependências do projeto:
+
 ```
 $ sudo pip3 install python-mnist
 ```
