@@ -15,8 +15,11 @@ class Helper:
         components (list): a list containing the corresponding components, represented by the 'indexes' list.
         """
 
-        if numMembers % 2 == 0:
+        if numMembers < 1 or numMembers > len(S_set):
+            raise AttributeError("Invalid number.")
+        elif numMembers % 2 == 0:
             raise ArithmeticError("Number of members must be odd.")
+       
 
         values = random.sample(list(enumerate(S_set)), numMembers)        
         indexes = []
