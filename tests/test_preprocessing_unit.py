@@ -22,3 +22,9 @@ class TestPreprocessing(unittest.TestCase):
 
         message = self.preprocessor.apply(self.image, sm=[])
         self.assertEqual(message, "Image 50, rotated 90 degrees, no resized, resized to 32x32x1, smoothed")
+
+        with self.assertRaises(AttributeError) as context:
+            message = self.preprocessor.apply(self.image, va=[])
+        self.assertTrue("Invalid operation.", context.exception)
+            
+

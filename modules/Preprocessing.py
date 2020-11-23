@@ -92,6 +92,7 @@ class PreprocessingManager:
                 image = Resize(image, operations[key][0], operations[key][1])
             elif key == 'sm':
                 image = Smoothing(image, operations[key])
+            else: raise AttributeError("Invalid operation.")
         
         self.__message = image.apply()
         print(self.__message)
