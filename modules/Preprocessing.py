@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum 
 from mnist import MNIST
+from copy import deepcopy
 import time, math
 
 class IPreprocessor(ABC):
@@ -12,6 +13,7 @@ class Image(IPreprocessor):
         self.__mnist_data = MNIST()
         self._image = image
         self.__id = imageID
+        self._description = "Image {0}".format(self.__id)
         
     def print_image(self):
         print(self.__mnist_data.display(self._image))
@@ -23,11 +25,11 @@ class Image(IPreprocessor):
         return self.__id
 
     def get_shape(self):
-        h = int(math.sqrt(len(self._image.get_image_arr())))
+        h = int(math.sqrt(len(self.get_image_arr())))
         return (h,h)
 
     def apply(self):
-        return "Image {0}".format(self.__id)
+        return self._description
 
 class PreprocessorDecorator(IPreprocessor, ABC):
     def __init__(self, image: IPreprocessor, *params):
@@ -42,33 +44,39 @@ class Rotation(PreprocessorDecorator):
         super().__init__(image, *params)
 
     def apply(self):
-        return self._image.apply() + ", rotated {0} degrees".format(self._params[0])
+        self._image._description = self._image.apply() + ", rotated {0} degrees".format(self._params[0])
+        return self._image._description
 
 class Resize(PreprocessorDecorator):
     def __init__(self, image: IPreprocessor, *params):
         super().__init__(image, *params)
 
     def apply(self):
-        from copy import deepcopy
-
         image = deepcopy(self._image)
         image.__class__ = Image
         
         if image.get_shape() != self._params:
-            return self._image.apply() + ", resized to {0}x{1}x1".format(self._params[0], self._params[1])
+            self._image._description = self._image.apply() + ", resized to {0}x{1}x1".format(self._params[0], self._params[1])
         else:
-            return self._image.apply() + ", no resized"
+            self._image._description = self._image.apply() + ", no resized"
+        
+        return self._image._description 
 
 class Smoothing(PreprocessorDecorator):
     def __init__(self, image: IPreprocessor, *params):
         super().__init__(image, *params)
 
     def apply(self):
-        return self._image.apply() + ", smoothed"
+        self._image._description = self._image.apply() + ", smoothed"
+        return self._image._description
 
 
 class PreprocessingManager:
-    """
+    def __init__(self):
+        self.__message = ""
+
+    def apply(self, image: Image, **operations):
+        """
         Performs the preprocessing operations on the provided image.
 
         image (Image): the image object that will be preprocessed.
@@ -76,21 +84,17 @@ class PreprocessingManager:
             - ro (rotation): simulates an image rotation. The degrees must be passed along (eg.: ro=30)
             - rz (resize): simulates an image resizing. The values must be passed along (eg.: rz="32x32")  
             - sm (smoothing): simulates an image smoothing. No values are passed. 
-    """
-    def __init__(self, image: Image, **operations):
-        self.__message = ""
-        self.__image = image
-        self.__operations = operations
-
-    def apply(self):
-        for key in self.__operations.keys():
+        """
+        for key in operations.keys():
             if key == 'ro':
-                self.__image = Rotation(self.__image, self.__operations[key])
+                image = Rotation(image, operations[key])
             elif key == 'rz':
-                self.__image = Resize(self.__image, self.__operations[key][0], self.__operations[key][1])
+                image = Resize(image, operations[key][0], operations[key][1])
             elif key == 'sm':
-                self.__image = Smoothing(self.__image, self.__operations[key])
+                image = Smoothing(image, operations[key])
         
-        print(self.__image.apply())
+        self.__message = image.apply()
+        print(self.__message)
+        return self.__message
 
         

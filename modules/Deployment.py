@@ -24,8 +24,11 @@ class ExecutionManager:
         import random
 
         # preprocesses the image according to the settings in 'preprocessing_params'.
-        preprocessing = PreprocessingManager(image, **preprocessing_params)
-        preprocessing.apply()   
+        preprocessing = PreprocessingManager()
+        
+        for key in preprocessing_params.keys():
+            operation = {key: preprocessing_params[key]}
+            preprocessing.apply(image, **operation)   
 
         indexes, _ = Helper.getEnsembleMembers(self.__sset, random.randrange(1, len(self.__sset), 2))    
         vm = []
