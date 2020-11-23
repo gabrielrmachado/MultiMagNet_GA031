@@ -28,7 +28,7 @@ class TestHelper(unittest.TestCase):
     def test_threshold_approach(self):
         metrics = [0.002, 0.025, 0.044, 0.0015, 0.001]
         metrics_approach = Helper.apply_threshold_approach(metrics, ThresholdApproach.MTA.value)
-        self.assertCountEqual(metrics, metrics_approach)
+        self.assertListEqual(metrics, metrics_approach)
 
         metrics_approach = Helper.apply_threshold_approach(metrics, ThresholdApproach.minTA.value)
-        self.assertCountEqual(metrics_approach, [0.001, 0.001, 0.001, 0.001, 0.001])
+        self.assertListEqual(list(metrics_approach), [0.001, 0.001, 0.001, 0.001, 0.001])
