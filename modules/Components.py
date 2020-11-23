@@ -15,9 +15,9 @@ class CAE(IComponent):
         super().__init__(id)
 
     def execute(self, image):
-        print("CAE {0} is reconstructing the image...".format(self._id))
+        # print("CAE {0} is reconstructing the image...".format(self._id))
         image_ref = image.copy()
-        print("CAE finished.")
+        # print("CAE finished.")
         return image_ref        
 
 class DAE(IComponent):
@@ -25,9 +25,9 @@ class DAE(IComponent):
         super().__init__(id)
 
     def execute(self, image):
-        print("DAE {0} is reconstructing the image...".format(self._id))
+        # print("DAE {0} is reconstructing the image...".format(self._id))
         image_ref = image.copy()
-        print("DAE finished.")
+        # print("DAE finished.")
         return image_ref
 
 class GAN(IComponent):
@@ -35,9 +35,9 @@ class GAN(IComponent):
         super().__init__(id)
 
     def execute(self, image):
-        print("GAN {0} is reconstructing the image...".format(self._id))
+        # print("GAN {0} is reconstructing the image...".format(self._id))
         image_ref = image.copy()
-        print("CAE finished.")
+        # print("CAE finished.")
         return image_ref
 
 class ComponentFactory(ABC):
@@ -90,7 +90,3 @@ class Component:
             self.__component = GANFactory().create()
 
         return self.__component
-
-# component = Component()
-# component.getComponent(None, Factory.CAE).execute()
-# component.getComponent(None, Factory.GAN).execute()
