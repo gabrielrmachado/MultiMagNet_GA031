@@ -6,7 +6,7 @@ from MetricComputation import Metric, MetricComputation, ThresholdApproach
 from Evaluation import Assessment
 
 class ParameterTuning:
-    def __init__(self, userID=None):
+    def __init__(self, userID=None, password=None):
         user = User()
         self.__userID = userID
 
@@ -14,7 +14,7 @@ class ParameterTuning:
         if self.__userID is None:
             self.__userID = input("Welcome to the Calibration Stage of MultiMagNet! Type your user ID: ")
         
-        user.login(self.__userID)
+        user.login(self.__userID, password)
         
         if user.get_priority_logged_user() > 1:
             raise PermissionError("Sorry, user {0} is not allowed to perform calibrations on MultiMagNet.".format(user.get_name_user()))
