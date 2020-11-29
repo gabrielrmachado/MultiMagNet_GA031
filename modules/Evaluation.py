@@ -26,7 +26,7 @@ class Assessment:
         self.__combinations = combinations
         self.__accuracies = np.zeros(len(self.__combinations))
 
-    def evaluate(self, m: MetricComputation):
+    def evaluate(self, m: MetricComputation, save_parameters=True):
         # always forms up an ensemble containing an odd number of members.
         idx, members = Helper.getEnsembleMembers(self.__s_set, random.randrange(1, len(self.__s_set), 2))
         votes = np.zeros(shape=(len(self.__combinations), len(self.__data)), dtype=int)
@@ -67,9 +67,10 @@ class Assessment:
         indexes = [i for i in range(len(self.__s_set))]
         self.__tb = dict(zip(indexes, self.__tau_set[best_combination_idx]))
 
-        # saves the best combination and their corresponding thresholds in the 'fbest.json' and 'thresholds.json' for future use.
-        with open("data/files/fbest.json", 'w') as fbest_file:
-            json.dump(self.__best_combination, fbest_file)
+        if save_parameters == True:
+            # saves the best combination and their corresponding thresholds in the 'fbest.json' and 'thresholds.json' for future use.
+            with open("data/files/fbest.json", 'w') as fbest_file:
+                json.dump(self.__best_combination, fbest_file)
 
-        with open("data/files/tb.json", 'w') as tb_file:
-            json.dump(self.__tb, tb_file)
+            with open("data/files/tb.json", 'w') as tb_file:
+                json.dump(self.__tb, tb_file)

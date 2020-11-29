@@ -52,13 +52,15 @@ class ExecutionManager:
         d = Detection(vm, tb_members)
         ans = d.detect()
 
-        print("\nImage {0} is {1}".format(image.get_image_id(), "legitimate" if is_adv == 0  else "adversarial"))
+        print("\nImage {0} is {1}".format(image.get_image_id(), "legitimate" if is_adv == 0 else "adversarial"))
 
         if ans == False:
             print("Image {0} has been detected as adversarial and will be discarded.\n".format(image.get_image_id()))
-        else: # if the image is considered as legitimate, it will be reformed.
+        else: # if the image is considered legitimate, it will be reformed.
             print("Image {0} is going to be reformed.\n".format(image.get_image_id()))
             r = Reformation(self.__sset, image)
             r.reform()
+
+        return True
 
         

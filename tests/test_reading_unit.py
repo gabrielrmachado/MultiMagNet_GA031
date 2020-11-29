@@ -12,4 +12,4 @@ class TestReading(unittest.TestCase):
 
     def test_fbest_reading(self):
         params = self.parameterizer.get_parameters(FileType.Fbest_file)
-        self.assertEqual(params, {"fp": 0.01, "m": 1, "a": 1})
+        self.assertEqual(params, {"fp": 0.01, "m": 1, "a": 2})

@@ -7,9 +7,10 @@ from Evaluation import Assessment
 
 class ParameterTuning:
     def __init__(self, userID=None, password=None):
-        user = User()
         self.__userID = userID
-
+        self.loggedUser = None
+        user = User()
+        
         # simulates the login operation of an user.
         if self.__userID is None:
             self.__userID = input("Welcome to the Calibration Stage of MultiMagNet! Type your user ID: ")
@@ -19,7 +20,9 @@ class ParameterTuning:
         if user.get_priority_logged_user() > 1:
             raise PermissionError("Sorry, user {0} is not allowed to perform calibrations on MultiMagNet.".format(user.get_name_user()))
 
-    def calibrate(self, qtd_leg_images):
+        else: self.loggedUser = user                
+
+    def calibrate(self, qtd_leg_images, save_parameters=True):
         # simulates the loading process of all the components from S set.
         f = Component()
         
@@ -35,7 +38,7 @@ class ParameterTuning:
         tau_set, combinations = m.get_tau_set()
         vdata, vlabels = ImageDAO.get_Vdataset(qtd_leg_images, AttackAlgorithm.FGSM, eps=0.3)
         a = Assessment(vdata, vlabels, tau_set, sset, combinations)
-        a.evaluate(m)
+        a.evaluate(m, save_parameters)
 
         print("\nFbest and Tb files have been saved successfully.")
         return True
