@@ -83,15 +83,15 @@ class Repository:
 
     def __getComponent(self, factory: Factory):
         if factory == Factory.CAE:
-            self.__component = CAEFactory().create()
+            self.__component = CAEFactory()
 
         elif factory == Factory.DAE:
-            self.__component = DAEFactory().create()
+            self.__component = DAEFactory()
 
         elif factory == Factory.GAN:
-            self.__component = GANFactory().create()
+            self.__component = GANFactory()
 
-        return self.__component
+        return self.__component.create()
 
     def getSSet(self):
         return self._sset
