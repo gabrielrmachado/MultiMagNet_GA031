@@ -1,4 +1,3 @@
-from Helper import Helper
 import numpy as np
 
 class Detection:

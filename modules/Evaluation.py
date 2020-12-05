@@ -1,4 +1,3 @@
-from Helper import Helper
 from MetricComputation import MetricComputation, Metric, ThresholdApproach
 import numpy as np
 import json
@@ -14,21 +13,22 @@ class Assessment:
     Vdata: the V dataset containing both legitimate and adversarial images;
     Vlabels: the corresponding labels for each image in the V dataset;
     tau_set: the set containing the 'm.c' thresholds (computed from legitimate images)
-    s_set: the set containing 'm' defense components, used to compute the Tau_set;
+    r: the repository object;
     combinations: the list containing the parameter's combinations.
     """
-    def __init__(self, Vdata, Vlabels, tau_set, s_set, combinations):
+    def __init__(self, Vdata, Vlabels, tau_set, r, combinations):
         self.__data = Vdata
         self.__true_labels = Vlabels
         self.__best_combination = {'fp': None, 'm': None, 'a': None}
         self.__tau_set = tau_set
-        self.__s_set = s_set
+        self.__r = r
+        self.__sset = r.getSSet()
         self.__combinations = combinations
         self.__accuracies = np.zeros(len(self.__combinations))
 
     def evaluate(self, m: MetricComputation, save_parameters=True):
         # always forms up an ensemble containing an odd number of members.
-        idx, members = Helper.getEnsembleMembers(self.__s_set, random.randrange(1, len(self.__s_set), 2))
+        idx, members = self.__r.getEnsembleMembers(random.randrange(1, len(self.__sset), 2))
         votes = np.zeros(shape=(len(self.__combinations), len(self.__data)), dtype=int)
         team_metrics = np.zeros(len(members))
 
@@ -42,7 +42,7 @@ class Assessment:
                     rec_image = members[k].execute(self.__data[j])
                     team_metrics[k] = m.get_metric(self.__combinations[i][1]).compute(self.__data[j], rec_image, self.__true_labels[j])
                 
-                ta_metrics = Helper.apply_threshold_approach(team_metrics, self.__combinations[i][2])
+                ta_metrics = MetricComputation.apply_threshold_approach(team_metrics, self.__combinations[i][2])
 
                 for k in range(len(ta_metrics)):
                     metric = ta_metrics[k]
@@ -64,7 +64,7 @@ class Assessment:
         self.__best_combination["a"] = self.__combinations[best_combination_idx][2]
         
         # get the Tb thresholds set which produced the largest accuracy.
-        indexes = [i for i in range(len(self.__s_set))]
+        indexes = [i for i in range(len(self.__sset))]
         self.__tb = dict(zip(indexes, self.__tau_set[best_combination_idx]))
 
         if save_parameters == True:

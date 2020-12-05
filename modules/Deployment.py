@@ -1,10 +1,9 @@
 from Reading import Parameterizer, FileType
 from Preprocessing import Image, PreprocessingManager, Resize, Rotation, Smoothing
 from MetricComputation import Metric, MetricComputation, ThresholdApproach
-from Components import Factory, Component
+from Components import Factory, Repository
 from Detection import Detection
 from Reformation import Reformation
-from Helper import Helper
 
 class ExecutionManager:
     def __init__(self, folder_fbest_tb_files = "/data/files"):
@@ -15,10 +14,8 @@ class ExecutionManager:
         self.__tb = parameterizer.get_parameters(FileType.Tb_file)
 
         # loads the S set.
-        f = Component()
-        self.__sset = [f.getComponent(Factory.CAE), f.getComponent(Factory.DAE), f.getComponent(Factory.GAN), f.getComponent(Factory.CAE), 
-            f.getComponent(Factory.DAE), f.getComponent(Factory.GAN)]
-
+        self.__r = Repository()
+        self.__sset = self.__r.getSSet()
 
     def run(self, image: Image, **preprocessing_params):
         import random
@@ -30,7 +27,7 @@ class ExecutionManager:
             operation = {key: preprocessing_params[key]}
             preprocessing.apply(image, **operation)   
 
-        indexes, _ = Helper.getEnsembleMembers(self.__sset, random.randrange(1, len(self.__sset), 2))    
+        indexes, _ = self.__r.getEnsembleMembers(random.randrange(1, len(self.__sset), 2))    
         vm = []
         tb_members = []
 
@@ -46,7 +43,7 @@ class ExecutionManager:
             tb_members.append(self.__tb[i])
 
         # apply the threshold approach.
-        tb_members = Helper.apply_threshold_approach(tb_members, self.__fb['a'])
+        tb_members = MetricComputation.apply_threshold_approach(tb_members, self.__fb['a'])
 
         # checks whether the input image is adversarial or not.
         d = Detection(vm, tb_members)
@@ -58,7 +55,7 @@ class ExecutionManager:
             print("Image {0} has been detected as adversarial and will be discarded.\n".format(image.get_image_id()))
         else: # if the image is considered legitimate, it will be reformed.
             print("Image {0} is going to be reformed.\n".format(image.get_image_id()))
-            r = Reformation(self.__sset, image)
+            r = Reformation(self.__r, image)
             r.reform()
 
         return True

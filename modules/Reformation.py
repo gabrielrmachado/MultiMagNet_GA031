@@ -1,10 +1,9 @@
-from Helper import Helper
 from Components import IComponent
 
 class Reformation:
-    def __init__(self, reformers, image):
+    def __init__(self, r, image):
         self.__reformer: IComponent
-        _, self.__reformer = Helper.getEnsembleMembers(reformers, 1)
+        _, self.__reformer = r.getEnsembleMembers(1)
         self.__image = image
 
     def reform(self):

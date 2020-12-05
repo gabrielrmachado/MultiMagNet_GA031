@@ -5,14 +5,14 @@ class TestMetrics(unittest.TestCase):
 
     def setUp(self):
         from modules.Data import ImageDAO
-        from modules.Components import Component, Factory
+        from modules.Components import Repository, Factory
 
-        f = Component()
+        r = Repository()
         self.fp = [0.01, 0.05, 0.1]
         self.metrics = [Metric.JSD, Metric.RE]
         self.a = [ThresholdApproach.minTA, ThresholdApproach.MTA]
         self.images_vleg, _ = ImageDAO.get_images(10)
-        self.m = [f.getComponent(Factory.CAE), f.getComponent(Factory.DAE), f.getComponent(Factory.GAN)]
+        self.m = r.getSSet()
 
         self.computation = MetricComputation(self.fp, self.metrics, self.a, self.images_vleg, self.m)
 
@@ -36,5 +36,13 @@ class TestMetrics(unittest.TestCase):
                 metrics_desc_order = -np.sort(-metrics[i][j]) # sorts in descending order
                 index = math.ceil(combinations[i][0] * len(metrics_desc_order))
                 self.assertEqual(tau_set[i][j], metrics_desc_order[index])
+
+    def test_threshold_approach(self):
+        metrics = [0.002, 0.025, 0.044, 0.0015, 0.001]
+        metrics_approach = MetricComputation.apply_threshold_approach(metrics, ThresholdApproach.MTA.value)
+        self.assertListEqual(metrics, metrics_approach)
+
+        metrics_approach = MetricComputation.apply_threshold_approach(metrics, ThresholdApproach.minTA.value)
+        self.assertListEqual(list(metrics_approach), [0.001, 0.001, 0.001, 0.001, 0.001])
 
 

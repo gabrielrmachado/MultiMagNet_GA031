@@ -75,11 +75,12 @@ class Factory(Enum):
     DAE = 2
     GAN = 3
 
-class Component:
+class Repository:
     def __init__(self):
         self.__component: ComponentFactory
+        self._sset = []
 
-    def getComponent(self, factory: Factory):
+    def __getComponent(self, factory: Factory):
         if factory == Factory.CAE:
             self.__component = CAEFactory().create()
 
@@ -90,3 +91,40 @@ class Component:
             self.__component = GANFactory().create()
 
         return self.__component
+
+    def getSSet(self):
+        self._sset = [self.__getComponent(Factory.CAE), self.__getComponent(Factory.DAE), self.__getComponent(Factory.GAN), self.__getComponent(Factory.CAE), 
+            self.__getComponent(Factory.DAE), self.__getComponent(Factory.GAN)]
+        
+        return self._sset
+
+    def getEnsembleMembers(self, numMembers: int):
+        """
+        Receives the S set and choose randomly an odd number of members.
+
+        Returns:
+        --------------
+
+        indexes (list): a list with the corresponding chosen indexes in S set;
+        components (list): a list containing the corresponding components, represented by the 'indexes' list.
+        """
+
+        if numMembers < 1 or numMembers > len(self._sset):
+            raise AttributeError("Invalid number.")
+        elif numMembers % 2 == 0:
+            raise ArithmeticError("Number of members must be odd.")
+       
+
+        values = random.sample(list(enumerate(self._sset)), numMembers)        
+        indexes = []
+        components = []
+        
+        for idx, comp in values:
+            indexes.append(idx)
+            components.append(comp)
+
+        return indexes, components
+
+    
+
+    

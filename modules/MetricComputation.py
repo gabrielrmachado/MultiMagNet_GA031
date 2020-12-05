@@ -58,6 +58,13 @@ class MetricComputation:
         if metric == Metric.JSD: return JSDMetric()
         else: return REMetric()
 
+    @staticmethod
+    def apply_threshold_approach(team_metrics, approach = ThresholdApproach.MTA):
+        if approach == ThresholdApproach.minTA.value:
+            return np.full(len(team_metrics), np.amin(team_metrics))
+        else:
+            return team_metrics
+
     def compute_metrics(self):        
         for i in range(self.__numCombinations):
 
