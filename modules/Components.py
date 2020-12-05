@@ -78,7 +78,8 @@ class Factory(Enum):
 class Repository:
     def __init__(self):
         self.__component: ComponentFactory
-        self._sset = []
+        self._sset = [self.__getComponent(Factory.CAE), self.__getComponent(Factory.DAE), self.__getComponent(Factory.GAN), self.__getComponent(Factory.CAE), 
+            self.__getComponent(Factory.DAE), self.__getComponent(Factory.GAN)]
 
     def __getComponent(self, factory: Factory):
         if factory == Factory.CAE:
@@ -93,9 +94,6 @@ class Repository:
         return self.__component
 
     def getSSet(self):
-        self._sset = [self.__getComponent(Factory.CAE), self.__getComponent(Factory.DAE), self.__getComponent(Factory.GAN), self.__getComponent(Factory.CAE), 
-            self.__getComponent(Factory.DAE), self.__getComponent(Factory.GAN)]
-        
         return self._sset
 
     def getEnsembleMembers(self, numMembers: int):
