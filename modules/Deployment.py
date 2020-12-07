@@ -1,5 +1,5 @@
 from Reading import Parameterizer, FileType
-from Preprocessing import Image, PreprocessingManager, Resize, Rotation, Smoothing
+from Preprocessing import Image, PreprocessingManager
 from MetricComputation import Metric, MetricComputation, ThresholdApproach
 from Components import Factory, Repository
 from Detection import Detection
